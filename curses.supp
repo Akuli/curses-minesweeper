@@ -1,0 +1,699 @@
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_first_db
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_nc_tparm_analyze
+   fun:tparm
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_nc_home_terminfo
+   fun:_nc_first_db
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_first_db
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:tparm
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_nc_first_db
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_read_termtype
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_read_entry
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_setupterm
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:newwin
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:newterm
+   fun:initscr
+   fun:curses.initscr
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_add_to_try
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_keypad
+   fun:curses.Window.keypad
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_tparm_analyze
+   fun:tparm
+   fun:vidputs
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_add_to_try
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_keypad
+   fun:curses.Window.keypad
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_add_to_try
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_keypad
+   fun:curses.Window.keypad
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_add_to_try
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_keypad
+   fun:curses.Window.keypad
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_nc_add_to_try
+   obj:/lib/x86_64-linux-gnu/libtinfo.so.5.9
+   fun:_nc_keypad
+   fun:curses.Window.keypad
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+
