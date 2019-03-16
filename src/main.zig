@@ -1,12 +1,18 @@
 const std = @import("std");
+const argparser = @import("argparser.zig");
 const core = @import("core.zig");
-const cursesui = @import("cursesui.zig");
-
 const curses = @import("curses.zig");
+const cursesui = @import("cursesui.zig");
 
 
 pub fn main() anyerror!void {
     const allocator = std.heap.c_allocator;
+
+    var args = argparser.Args.initDefaults();
+    argparser.parse(allocator, &args) catch |e| switch(e) {
+        argparser.Error => return,      // error message is printed already
+        else => return e,
+    };
 
     var buf: [8]u8 = undefined;
     try std.os.getRandomBytes(buf[0..]);

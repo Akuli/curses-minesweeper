@@ -9,6 +9,8 @@ pub fn build(b: *Builder) void {
     exe.linkSystemLibrary("c");
     exe.linkSystemLibrary("ncursesw");
     exe.addIncludeDir(".");
+    exe.addPackagePath("zig-clap", "zig-clap/index.zig");
+    exe.setOutputDir("zig-cache");
 
     const valgrind_cmd = b.addSystemCommand([][]const u8{"valgrind"});
     valgrind_cmd.addArg("--leak-check=full");
