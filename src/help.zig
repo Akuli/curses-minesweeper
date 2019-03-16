@@ -31,13 +31,20 @@ const Wrapper = struct {
 };
 
 
+// if you modify this, make sure that it fits on an 80x24 standard-sized terminal!
 const text_with_single_newlines =
     \\The goal is to open all squares that don't contain mines, but none of the squares that contain
     \\mines. When you have opened a square, the number of the square indicates how many mines there
-    \\are in the 8 other squares around the opened square.
+    \\are in the 8 other squares around the opened square (aka "neighbor squares"). The game ends
+    \\when all non-mine squares are opened (you win), or a mine square is opened (you lose).
     \\
-    \\The game ends when all non-mine squares are opened (you win), or a mine square is opened (you
-    \\lose).
+    \\You can flag the mines to keep track of them more easily (but you don't need to). This has no
+    \\effect on winning or losing; the flagging is meant to be nothing more than a handy way to keep
+    \\track of the mines you have already found.
+    \\
+    \\Flagging the mines can make playing the game a lot easier. For example, if you have opened a
+    \\square and it shows the number 3, and you have flagged exactly 3 of its neighbors, then you
+    \\can open all other neighbors because they can't contain mines. This is how the "d" key works.
     ;
 
 // does nothing to \n\n repeated, but replaces single \n with spaces
@@ -103,14 +110,15 @@ fn drawText(window: curses.Window, key_bindings: []const KeyBinding, allocator: 
     try window.attroff(curses.A_STANDOUT);
 }
 
-pub fn show(window: curses.Window, key_bindings: []const KeyBinding, allocator: *std.mem.Allocator) !void {
+// returns true if ok, false if help message didn't fit on the terminal
+pub fn show(window: curses.Window, key_bindings: []const KeyBinding, allocator: *std.mem.Allocator) !bool {
     while (true) {
         drawText(window, key_bindings, allocator) catch |err| switch(err) {
-            error.TerminalIsTooSmall => return,     // it might be playable even if help doesn't fit
+            error.TerminalIsTooSmall => return false,     // it might be playable even if help doesn't fit
             else => return err,
         };
         switch (try window.getch()) {
-            'Q', 'q' => return,
+            'Q', 'q' => return true,
             else => {},
         }
     }

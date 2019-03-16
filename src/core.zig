@@ -212,6 +212,35 @@ pub const Game = struct {
         }
     }
 
+    pub fn openAroundIfSafe(self: *Game, x: u8, y: u8) void {
+        if (self.status != GameStatus.PLAY or !self.map[y][x].opened) {
+            return;
+        }
+
+        var arr: NeighborArray = undefined;
+        var neighbor_mines: u8 = 0;
+        var neighbor_flags: u8 = 0;
+        for (self.getNeighbors(x, y, arr[0..])) |neighbor| {
+            const nx = neighbor[0];
+            const ny = neighbor[1];
+            if (self.map[ny][nx].mine) {
+                neighbor_mines += 1;
+            }
+            if (self.map[ny][nx].flagged) {
+                neighbor_flags += 1;
+            }
+        }
+        if (neighbor_mines != neighbor_flags) {
+            return;
+        }
+
+        for (self.getNeighbors(x, y, arr[0..])) |neighbor| {
+            const nx = neighbor[0];
+            const ny = neighbor[1];
+            self.open(nx, ny);
+        }
+    }
+
     pub fn toggleFlag(self: *Game, x: u8, y: u8) void {
         if (self.status != GameStatus.PLAY or self.map[y][x].opened) {
             return;

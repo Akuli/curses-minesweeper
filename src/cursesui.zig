@@ -60,6 +60,7 @@ pub const Ui = struct {
     chars: Characters,
     colors: bool,
     number_attrs: [9]c_int,  // for coloring the numbers that show how many mines are around
+    status_message: ?[]const u8,
 
     pub fn init(game: *core.Game, window: curses.Window, characters: Characters) !Ui {
         var self = Ui{
@@ -70,6 +71,7 @@ pub const Ui = struct {
             .chars = characters,
             .colors = false,
             .number_attrs = undefined,
+            .status_message = null,
         };
         try self.setupColors();
         return self;
@@ -186,6 +188,10 @@ pub const Ui = struct {
             self.chars.horiz_line);
     }
 
+    pub fn setStatusMessage(self: *Ui, msg: []const u8) void {
+        self.status_message = msg;
+    }
+
     // this may overlap the grid on a small terminal, it doesn't matter
     fn drawStatusText(self: *const Ui, msg: []const u8) !void {
         try self.window.attron(curses.A_STANDOUT);
@@ -193,12 +199,19 @@ pub const Ui = struct {
         try self.window.attroff(curses.A_STANDOUT);
     }
 
-    pub fn draw(self: *const Ui, allocator: *std.mem.Allocator, is_first: bool) !void {
+    pub fn draw(self: *Ui, allocator: *std.mem.Allocator) !void {
         try self.drawGrid(allocator);
-        switch (self.game.status) {
-            core.GameStatus.PLAY => if (is_first) try self.drawStatusText("Press h for help."),
-            core.GameStatus.WIN => try self.drawStatusText("You won! :D Press n to play again."),
-            core.GameStatus.LOSE => try self.drawStatusText("Game Over :( Press n to play again."),
+
+        if (self.status_message == null) {
+            switch(self.game.status) {
+                core.GameStatus.PLAY => {},
+                core.GameStatus.WIN => self.setStatusMessage("You won! :D Press n to play again."),
+                core.GameStatus.LOSE => self.setStatusMessage("Game Over :( Press n to play again."),
+            }
+        }
+        if (self.status_message) |msg| {
+            try self.drawStatusText(msg);
+            self.status_message = null;
         }
     }
 
@@ -229,4 +242,5 @@ pub const Ui = struct {
 
     pub fn openSelected(self: *const Ui) void { self.game.open(self.selected_x, self.selected_y); }
     pub fn toggleFlagSelected(self: *const Ui) void { self.game.toggleFlag(self.selected_x, self.selected_y); }
+    pub fn openAroundIfSafe(self: *const Ui) void { self.game.openAroundIfSafe(self.selected_x, self.selected_y); }
 };

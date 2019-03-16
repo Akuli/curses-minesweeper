@@ -48,22 +48,25 @@ pub fn main() anyerror!void {
         help.KeyBinding{ .key = "arrow keys", .help = "move the selection" },
         help.KeyBinding{ .key = "enter", .help = "open the selected square" },
         help.KeyBinding{ .key = "f", .help = "flag or unflag the selected square" },
+        help.KeyBinding{ .key = "d", .help = "open all non-flagged neighbors if the correct number of them are flagged" },
     };
+    ui.setStatusMessage("Press h for help.");
 
-    var is_first: bool = true;
     while (true) {
         try stdscr.erase();
-        try ui.draw(allocator, is_first);
-        is_first = false;
+        try ui.draw(allocator);
 
         switch (try stdscr.getch()) {
             'Q', 'q' => return,
             'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd),
             'H', 'h' => {
-                try help.show(stdscr, key_bindings, allocator);
+                const help_fit_on_terminal = try help.show(stdscr, key_bindings, allocator);
                 // terminal may have been resized while looking at help
                 if (!try ui.onResize()) {
                     return;
+                }
+                if (!help_fit_on_terminal) {
+                    ui.setStatusMessage("Please make your terminal bigger to read the help message.");
                 }
             },
             curses.KEY_RESIZE => if (!try ui.onResize()) return,
@@ -73,6 +76,7 @@ pub fn main() anyerror!void {
             curses.KEY_DOWN => ui.moveSelection(0, 1),
             '\n' => ui.openSelected(),
             'F', 'f' => ui.toggleFlagSelected(),
+            'D', 'd' => ui.openAroundIfSafe(),
             else => {},
         }
     }
