@@ -31,8 +31,28 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-pub fn parse(allocator: *std.mem.Allocator, args: *Args) !void {
+fn helpText(param: clap.Param(u8)) []const u8 {
+    return switch (param.id) {
+        'h' => "show this help and exit",
+        's' => "size of the minesweeper, e.g. 15x10",
+        'n' => "number of mines to add to the game",
+        'a' => "use only ASCII characters",
+        else => unreachable,
+    };
+}
+
+fn valueText(param: clap.Param(u8)) []const u8 {
+    return switch (param.id) {
+        's' => "WIDTHxHEIGHT",
+        'n' => "NUMBER",
+        else => unreachable,
+    };
+}
+
+// returns true when the process should exit immediately (e.g. --help)
+pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
     const params = []clap.Param(u8) {
+        clap.Param(u8).flag('h', clap.Names.long("help")),
         clap.Param(u8).option('s', clap.Names.both("size")),
         clap.Param(u8).option('n', clap.Names{ .short = 'n', .long = "mine-count" }),
         clap.Param(u8).flag('a', clap.Names.both("ascii-only")),
@@ -62,6 +82,13 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !void {
                 return Error;
             },
             'a' => args.characters = cursesui.ascii_characters,
+            'h' => {
+                const stdout = try std.io.getStdOut();
+                const stream = &stdout.outStream().stream;
+                try stream.print("Usage: {} [options]\n\nOptions:\n", exe);
+                try clap.helpEx(stream, u8, params, helpText, valueText);
+                return true;
+            },
             else => unreachable,
         }
     }
@@ -71,4 +98,5 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !void {
         std.debug.warn("{}: there must be less mines than places for mines\n", exe);
         return Error;
     }
+    return false;
 }
