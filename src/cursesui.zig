@@ -118,7 +118,7 @@ pub const Ui = struct {
                     if (info.opened) {
                         msg1 = numbers[info.n_mines_around..info.n_mines_around+1];
                     } else if (info.flagged) {
-                        msg1 = "F";
+                        msg1 = self.chars.flag;
                     }
                 } else {
                     if (info.mine) {
@@ -127,7 +127,7 @@ pub const Ui = struct {
                         msg1 = numbers[info.n_mines_around..info.n_mines_around+1];
                     }
                     if (info.flagged) {
-                        msg2 = "F";
+                        msg2 = self.chars.flag;
                     }
                 }
 
