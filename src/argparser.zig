@@ -1,17 +1,20 @@
 const std = @import("std");
 const clap = @import("zig-clap");
+const cursesui = @import("cursesui.zig");
 
 
 pub const Args = struct {
     width: u8,
     height: u8,
     nmines: u16,
+    characters: cursesui.Characters,
 
     pub fn initDefaults() Args {
         return Args{
             .width = 10,
             .height = 10,
             .nmines = 10,
+            .characters = cursesui.unicode_characters,
         };
     }
 };
@@ -32,6 +35,7 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !void {
     const params = []clap.Param(u8) {
         clap.Param(u8).option('s', clap.Names.both("size")),
         clap.Param(u8).option('n', clap.Names{ .short = 'n', .long = "mine-count" }),
+        clap.Param(u8).flag('a', clap.Names.both("ascii-only")),
     };
 
     var iter = clap.args.OsIterator.init(allocator);
@@ -57,6 +61,7 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !void {
                     exe, @intCast(u16, std.math.maxInt(u16)));
                 return Error;
             },
+            'a' => args.characters = cursesui.ascii_characters,
             else => unreachable,
         }
     }

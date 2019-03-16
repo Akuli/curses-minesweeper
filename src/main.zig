@@ -3,10 +3,14 @@ const argparser = @import("argparser.zig");
 const core = @import("core.zig");
 const curses = @import("curses.zig");
 const cursesui = @import("cursesui.zig");
+const c_locale = @cImport(@cInclude("locale.h"));
 
 
 pub fn main() anyerror!void {
     const allocator = std.heap.c_allocator;
+
+    // displaying unicode characters in curses needs this and cursesw in build.zig
+    _ = c_locale.setlocale(c_locale.LC_ALL, c"");
 
     var args = argparser.Args.initDefaults();
     argparser.parse(allocator, &args) catch |e| switch(e) {
@@ -30,7 +34,7 @@ pub fn main() anyerror!void {
     _ = try curses.curs_set(0);
     _ = try stdscr.keypad(true);
 
-    var ui = cursesui.Ui.init(&game, stdscr);
+    var ui = cursesui.Ui.init(&game, stdscr, args.characters);
 
     if (!try ui.onResize()) {
         return;
