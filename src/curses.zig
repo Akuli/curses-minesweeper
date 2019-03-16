@@ -49,8 +49,7 @@ pub const Window = struct {
     pub fn keypad(self: Window, bf: bool) !c_int { return checkError(c.keypad(self.win, bf)); }
 };
 
-// couldn't figure out how to get these from curses.h
-pub const A_STANDOUT: c_int = 0x10000;
+pub const A_STANDOUT = c.MY_A_STANDOUT;
 
 
 pub fn initscr(allocator: *std.mem.Allocator) !Window {
