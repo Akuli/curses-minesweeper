@@ -197,8 +197,8 @@ pub const Ui = struct {
         try self.drawGrid(allocator);
         switch (self.game.status) {
             core.GameStatus.PLAY => {},
-            core.GameStatus.WIN => try self.drawStatusText("You won! :D"),
-            core.GameStatus.LOSE => try self.drawStatusText("Game Over :("),
+            core.GameStatus.WIN => try self.drawStatusText("You won! :D Press n to play again."),
+            core.GameStatus.LOSE => try self.drawStatusText("Game Over :( Press n to play again."),
         }
     }
 
