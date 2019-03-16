@@ -34,7 +34,7 @@ pub fn main() anyerror!void {
     _ = try curses.curs_set(0);
     _ = try stdscr.keypad(true);
 
-    var ui = cursesui.Ui.init(&game, stdscr, args.characters);
+    var ui = try cursesui.Ui.init(&game, stdscr, args.characters);
 
     if (!try ui.onResize()) {
         return;

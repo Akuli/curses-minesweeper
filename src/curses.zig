@@ -71,3 +71,50 @@ pub fn getch() !c_int {
 pub fn curs_set(visibility: c_int) !c_int {
     return try checkError(c.curs_set(visibility));
 }
+
+
+pub fn has_colors() bool {
+    return c.has_colors();
+}
+
+pub fn start_color() !void {
+    _ = try checkError(c.start_color());
+}
+
+const color_pair_attrs = []c_int{
+    -1,                 // 0 doesn't seem to be a valid color pair number, curses returns ERR for it
+    c.MY_COLOR_PAIR_1,
+    c.MY_COLOR_PAIR_2,
+    c.MY_COLOR_PAIR_3,
+    c.MY_COLOR_PAIR_4,
+    c.MY_COLOR_PAIR_5,
+    c.MY_COLOR_PAIR_6,
+    c.MY_COLOR_PAIR_7,
+    c.MY_COLOR_PAIR_8,
+    c.MY_COLOR_PAIR_9,
+    c.MY_COLOR_PAIR_10,
+};
+
+pub const ColorPair = struct {
+    id: c_short,
+
+    pub fn init(id: c_short, front: c_short, back: c_short) !ColorPair {
+        std.debug.assert(1 <= id and id < c_short(color_pair_attrs.len));
+        _ = try checkError(c.init_pair(id, front, back));
+        return ColorPair{ .id = id };
+    }
+
+    pub fn attr(self: ColorPair) c_int {
+        return color_pair_attrs[@intCast(usize, self.id)];
+    }
+};
+
+// listed in init_pair man page
+pub const COLOR_BLACK = c.COLOR_BLACK;
+pub const COLOR_RED = c.COLOR_RED;
+pub const COLOR_GREEN = c.COLOR_GREEN;
+pub const COLOR_YELLOW = c.COLOR_YELLOW;
+pub const COLOR_BLUE = c.COLOR_BLUE;
+pub const COLOR_MAGENTA = c.COLOR_MAGENTA;
+pub const COLOR_CYAN = c.COLOR_CYAN;
+pub const COLOR_WHITE = c.COLOR_WHITE;

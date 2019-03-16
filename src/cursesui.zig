@@ -58,21 +58,50 @@ pub const Ui = struct {
     game: *core.Game,
     window: curses.Window,
     chars: Characters,
+    colors: bool,
+    number_attrs: [9]c_int,  // for coloring the numbers that show how many mines are around
 
-    pub fn init(game: *core.Game, window: curses.Window, characters: Characters) Ui {
-        return Ui{
+    pub fn init(game: *core.Game, window: curses.Window, characters: Characters) !Ui {
+        var self = Ui{
             .selected_x = 0,
             .selected_y = 0,
             .game = game,
             .window = window,
             .chars = characters,
+            .colors = false,
+            .number_attrs = undefined,
         };
+        try self.setupColors();
+        return self;
     }
 
-    fn getWidth(self: Ui) u16 { return (self.game.width * @intCast(u16, "|---".len)) + @intCast(u16, "|".len); }
-    fn getHeight(self: Ui) u16 { return (self.game.height * 2) + 1; }
+    fn setupColors(self: *Ui) !void {
+        if (!curses.has_colors()) {
+            return;
+        }
+        try curses.start_color();
 
-    fn drawLine(self: Ui, y: u16, xleft: u16, left: []const u8, mid: []const u8, right: []const u8, horiz: []const u8) !void {
+        const colors = []c_short{
+            curses.COLOR_BLUE,
+            curses.COLOR_GREEN,
+            curses.COLOR_YELLOW,
+            curses.COLOR_RED,
+            curses.COLOR_CYAN,
+            curses.COLOR_MAGENTA,
+            curses.COLOR_MAGENTA,
+            curses.COLOR_MAGENTA,
+            curses.COLOR_MAGENTA,
+        };
+        std.debug.assert(colors.len == self.number_attrs.len);
+        for (colors) |color, i| {
+            self.number_attrs[i] = (try curses.ColorPair.init(@intCast(c_short, i+1), color, curses.COLOR_BLACK)).attr();
+        }
+    }
+
+    fn getWidth(self: *const Ui) u16 { return (self.game.width * @intCast(u16, "|---".len)) + @intCast(u16, "|".len); }
+    fn getHeight(self: *const Ui) u16 { return (self.game.height * 2) + 1; }
+
+    fn drawLine(self: *const Ui, y: u16, xleft: u16, left: []const u8, mid: []const u8, right: []const u8, horiz: []const u8) !void {
         var x: u16 = xleft;
 
         var i: u8 = 0;
@@ -88,7 +117,7 @@ pub const Ui = struct {
         try self.window.mvaddstr(y, x, right);
     }
 
-    fn drawGrid(self: Ui, allocator: *std.mem.Allocator) !void {
+    fn drawGrid(self: *const Ui, allocator: *std.mem.Allocator) !void {
         var top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
         var left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
 
@@ -109,23 +138,26 @@ pub const Ui = struct {
             var x: u16 = left;
             var gamex: u8 = 0;
             while (gamex < self.game.width) : (gamex += 1) {
+                var attrs: c_int = 0;
+                if (gamex == self.selected_x and gamey == self.selected_y) {
+                    attrs |= curses.A_STANDOUT;
+                }
+
                 const info = self.game.getSquareInfo(gamex, gamey);
                 var msg1: []const u8 = "";
                 var msg2: []const u8 = "";
                 const numbers = "012345678";
 
-                if (self.game.status == core.GameStatus.PLAY) {
-                    if (info.opened) {
-                        msg1 = numbers[info.n_mines_around..info.n_mines_around+1];
-                    } else if (info.flagged) {
+                if ((self.game.status == core.GameStatus.PLAY and info.opened)
+                 or (self.game.status != core.GameStatus.PLAY and !info.mine)) {
+                    msg1 = numbers[info.n_mines_around..info.n_mines_around+1];
+                    attrs |= self.number_attrs[info.n_mines_around];
+                } else if (self.game.status == core.GameStatus.PLAY) {
+                    if (info.flagged) {
                         msg1 = self.chars.flag;
                     }
                 } else {
-                    if (info.mine) {
-                        msg1 = self.chars.mine;
-                    } else {
-                        msg1 = numbers[info.n_mines_around..info.n_mines_around+1];
-                    }
+                    msg1 = self.chars.mine;
                     if (info.flagged) {
                         msg2 = self.chars.flag;
                     }
@@ -134,7 +166,6 @@ pub const Ui = struct {
                 try self.window.mvaddstr(y, x, self.chars.vert_line);
                 x += 1;
 
-                const attrs = if (gamex == self.selected_x and gamey == self.selected_y) curses.A_STANDOUT else 0;
                 try self.window.attron(attrs);
                 {
                     try self.window.mvaddstr(y, x, "   ");  // make sure that all 3 character places get attrs
@@ -156,13 +187,13 @@ pub const Ui = struct {
     }
 
     // this may overlap the grid on a small terminal, it doesn't matter
-    fn drawStatusText(self: Ui, msg: []const u8) !void {
+    fn drawStatusText(self: *const Ui, msg: []const u8) !void {
         try self.window.attron(curses.A_STANDOUT);
         try self.window.mvaddstr(self.window.getmaxy()-1, 0, msg);
         try self.window.attroff(curses.A_STANDOUT);
     }
 
-    pub fn draw(self: Ui, allocator: *std.mem.Allocator) !void {
+    pub fn draw(self: *const Ui, allocator: *std.mem.Allocator) !void {
         try self.drawGrid(allocator);
         switch (self.game.status) {
             core.GameStatus.PLAY => {},
@@ -172,7 +203,7 @@ pub const Ui = struct {
     }
 
     // returns whether to keep running the game
-    pub fn onResize(self: Ui) !bool {
+    pub fn onResize(self: *const Ui) !bool {
         if (self.window.getmaxy() < self.getHeight() or self.window.getmaxx() < self.getWidth()) {
             try curses.endwin();
             std.debug.warn("Terminal is too small :( Need {}x{}.\n", self.getWidth(), self.getHeight());
@@ -196,6 +227,6 @@ pub const Ui = struct {
         }
     }
 
-    pub fn openSelected(self: *Ui) void { self.game.open(self.selected_x, self.selected_y); }
-    pub fn toggleFlagSelected(self: *Ui) void { self.game.toggleFlag(self.selected_x, self.selected_y); }
+    pub fn openSelected(self: *const Ui) void { self.game.open(self.selected_x, self.selected_y); }
+    pub fn toggleFlagSelected(self: *const Ui) void { self.game.toggleFlag(self.selected_x, self.selected_y); }
 };
