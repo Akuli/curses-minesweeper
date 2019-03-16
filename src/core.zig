@@ -30,7 +30,7 @@ pub const Game = struct {
         // in the beginning, there are width*height squares, but the mines are
         // added when the user has already opened one of them, otherwise the
         // first square that the user opens could be a mine
-        std.debug.assert(width*height - 1 >= nmines);
+        std.debug.assert(u16(width)*u16(height) - 1 >= nmines);
 
         const map = try allocator.alloc([]Square, height);
         var nalloced: u8 = 0;
