@@ -193,10 +193,10 @@ pub const Ui = struct {
         try self.window.attroff(curses.A_STANDOUT);
     }
 
-    pub fn draw(self: *const Ui, allocator: *std.mem.Allocator) !void {
+    pub fn draw(self: *const Ui, allocator: *std.mem.Allocator, is_first: bool) !void {
         try self.drawGrid(allocator);
         switch (self.game.status) {
-            core.GameStatus.PLAY => {},
+            core.GameStatus.PLAY => if (is_first) try self.drawStatusText("Press h for help."),
             core.GameStatus.WIN => try self.drawStatusText("You won! :D Press n to play again."),
             core.GameStatus.LOSE => try self.drawStatusText("Game Over :( Press n to play again."),
         }

@@ -47,6 +47,8 @@ pub const Window = struct {
     pub fn attroff(self: Window, attr: c_int) !void { _ = try checkError(c.wattroff(self.win, attr)); }
 
     pub fn keypad(self: Window, bf: bool) !c_int { return checkError(c.keypad(self.win, bf)); }
+
+    pub fn getch(self: Window) !c_int { return checkError(c.wgetch(self.win)); }
 };
 
 pub const A_STANDOUT = c.MY_A_STANDOUT;
@@ -62,10 +64,6 @@ pub fn initscr(allocator: *std.mem.Allocator) !Window {
 
 pub fn endwin() !void {
     _ = try checkError(c.endwin());
-}
-
-pub fn getch() !c_int {
-    return try checkError(c.getch());
 }
 
 pub fn curs_set(visibility: c_int) !c_int {

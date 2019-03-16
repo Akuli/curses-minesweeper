@@ -1,9 +1,10 @@
 const std = @import("std");
+const c_locale = @cImport(@cInclude("locale.h"));
 const argparser = @import("argparser.zig");
 const core = @import("core.zig");
 const curses = @import("curses.zig");
 const cursesui = @import("cursesui.zig");
-const c_locale = @cImport(@cInclude("locale.h"));
+const help = @import("help.zig");
 
 
 pub fn main() anyerror!void {
@@ -40,13 +41,31 @@ pub fn main() anyerror!void {
         return;
     }
 
+    const key_bindings = []const help.KeyBinding{
+        help.KeyBinding{ .key = "q", .help = "quit the game" },
+        help.KeyBinding{ .key = "h", .help = "show this help" },
+        help.KeyBinding{ .key = "n", .help = "new game" },
+        help.KeyBinding{ .key = "arrow keys", .help = "move the selection" },
+        help.KeyBinding{ .key = "enter", .help = "open the selected square" },
+        help.KeyBinding{ .key = "f", .help = "flag or unflag the selected square" },
+    };
+
+    var is_first: bool = true;
     while (true) {
         try stdscr.erase();
-        try ui.draw(allocator);
+        try ui.draw(allocator, is_first);
+        is_first = false;
 
-        switch (try curses.getch()) {
+        switch (try stdscr.getch()) {
             'Q', 'q' => return,
             'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd),
+            'H', 'h' => {
+                try help.show(stdscr, key_bindings, allocator);
+                // terminal may have been resized while looking at help
+                if (!try ui.onResize()) {
+                    return;
+                }
+            },
             curses.KEY_RESIZE => if (!try ui.onResize()) return,
             curses.KEY_LEFT => ui.moveSelection(-1, 0),
             curses.KEY_RIGHT => ui.moveSelection(1, 0),

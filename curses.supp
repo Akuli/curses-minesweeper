@@ -696,4 +696,141 @@
    fun:std.special.callMainWithArgs
    fun:main
 }
-
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:_nc_doalloc
+   fun:_nc_tparm_analyze
+   fun:tparm
+   fun:vidputs
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:start_color
+   fun:curses.start_color
+   fun:cursesui.Ui.setupColors
+   fun:cursesui.Ui.init
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:start_color
+   fun:curses.start_color
+   fun:cursesui.Ui.setupColors
+   fun:cursesui.Ui.init
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:doupdate
+   fun:wrefresh
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wechochar
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:wresize
+   fun:resize_term
+   fun:resizeterm
+   fun:_nc_update_screensize
+   obj:/lib/x86_64-linux-gnu/libncursesw.so.5.9
+   fun:wgetch
+   fun:curses.Window.getch
+   fun:help.show
+   fun:main.0
+   fun:std.special.callMain
+   fun:std.special.callMainWithArgs
+   fun:main
+}
