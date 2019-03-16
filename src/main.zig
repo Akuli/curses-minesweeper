@@ -49,6 +49,7 @@ pub fn main() anyerror!void {
             curses.KEY_UP => ui.moveSelection(0, -1),
             curses.KEY_DOWN => ui.moveSelection(0, 1),
             '\n' => ui.openSelected(),
+            'F', 'f' => ui.toggleFlagSelected(),
             else => {},
         }
     }

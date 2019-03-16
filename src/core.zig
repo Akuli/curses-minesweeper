@@ -4,11 +4,13 @@ const std = @import("std");
 const Square = struct {
     opened: bool,
     mine: bool,
+    flagged: bool,
 };
 
 pub const SquareInfo = struct {
     opened: bool,
     mine: bool,
+    flagged: bool,
     n_mines_around: u8,
 };
 
@@ -44,7 +46,7 @@ pub const Game = struct {
             row.* = try allocator.alloc(Square, width);
             nalloced += 1;
             for (row.*) |*square| {
-                square.* = Square{ .opened = false, .mine = false };
+                square.* = Square{ .opened = false, .mine = false, .flagged = false };
             }
         }
 
@@ -110,6 +112,7 @@ pub const Game = struct {
         return SquareInfo{
             .opened = self.map[y][x].opened,
             .mine = self.map[y][x].mine,
+            .flagged = self.map[y][x].flagged,
             .n_mines_around = self.countNeighborMines(x, y),
         };
     }
@@ -208,6 +211,13 @@ pub const Game = struct {
                 mined += 1;
             }
         }
+    }
+
+    pub fn toggleFlag(self: *Game, x: u8, y: u8) void {
+        if (self.status != GameStatus.PLAY or self.map[y][x].opened) {
+            return;
+        }
+        self.map[y][x].flagged = !self.map[y][x].flagged;
     }
 };
 

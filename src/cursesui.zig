@@ -50,19 +50,22 @@ pub const Ui = struct {
             var gamex: u8 = 0;
             while (gamex < self.game.width) : (gamex += 1) {
                 const info = self.game.getSquareInfo(gamex, gamey);
-                var msg = []u8{ 0 };
+                var msg = [2]u8{ ' ', ' ' };
 
                 if (self.game.status == core.GameStatus.PLAY) {
                     if (info.opened) {
                         msg[0] = '0' + info.n_mines_around;
-                    } else {
-                        msg[0] = ' ';
+                    } else if (info.flagged) {
+                        msg[0] = 'f';
                     }
                 } else {
                     if (info.mine) {
                         msg[0] = '*';
                     } else {
                         msg[0] = '0' + info.n_mines_around;
+                    }
+                    if (info.flagged) {
+                        msg[1] = 'f';
                     }
                 }
 
@@ -75,9 +78,7 @@ pub const Ui = struct {
                     try self.window.mvaddstr(y, x, " ");
                     x += 1;
                     try self.window.mvaddstr(y, x, msg);
-                    x += 1;
-                    try self.window.mvaddstr(y, x, " ");
-                    x += 1;
+                    x += 2;
                 }
                 try self.window.attroff(attrs);
             }
@@ -129,7 +130,6 @@ pub const Ui = struct {
         }
     }
 
-    pub fn openSelected(self: *Ui) void {
-        self.game.open(self.selected_x, self.selected_y);
-    }
+    pub fn openSelected(self: *Ui) void { self.game.open(self.selected_x, self.selected_y); }
+    pub fn toggleFlagSelected(self: *Ui) void { self.game.toggleFlag(self.selected_x, self.selected_y); }
 };
