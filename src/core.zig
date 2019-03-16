@@ -188,8 +188,8 @@ pub const Game = struct {
         // try to find a non-mine, non-opened square
         // player won if there are none
         var xx: u8 = 0;
-        var yy: u8 = 0;
         while (xx < self.width) : (xx += 1) {
+            var yy: u8 = 0;
             while (yy < self.height) : (yy += 1) {
                 if (!self.map[yy][xx].opened and !self.map[yy][xx].mine) {
                     return;
