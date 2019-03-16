@@ -37,7 +37,7 @@ Run `./cursesminesweeper --help` for more options.
 
 ## FAQ
 
-### I can't get it installed!
+### I can't get it to work!
 
 Create an issue. I'll try to help.
 
