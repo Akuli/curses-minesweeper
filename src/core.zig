@@ -174,7 +174,7 @@ pub const Game = struct {
     }
 
     pub fn open(self: *Game, x: u8, y: u8) void {
-        if (self.status != GameStatus.PLAY) {
+        if (self.status != GameStatus.PLAY or self.map[y][x].flagged) {
             return;
         }
         self.openRecurser(x, y);
