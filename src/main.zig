@@ -19,7 +19,7 @@ pub fn main() anyerror!void {
     var default_prng = std.rand.DefaultPrng.init(std.mem.readIntSliceLittle(u64, buf[0..]));
     const rnd = &default_prng.random;
 
-    var game = try core.Game.init(allocator, 10, 10, 10, rnd);
+    var game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd);
     defer game.deinit();
 
     const stdscr = try curses.initscr(allocator);
