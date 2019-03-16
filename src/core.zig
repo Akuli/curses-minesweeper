@@ -145,7 +145,6 @@ pub const Game = struct {
                 }
                 std.debug.warn("|");
             }
-            // \x08 is the ascii char for moving cursor left, to hide the last |
             std.debug.warn("\n");
         }
         std.debug.warn("status = {}\n", self.status);
