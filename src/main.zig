@@ -42,6 +42,7 @@ pub fn main() anyerror!void {
 
         switch (try curses.getch()) {
             'Q', 'q' => return,
+            'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd),
             curses.KEY_RESIZE => if (!try ui.onResize()) return,
             curses.KEY_LEFT => ui.moveSelection(-1, 0),
             curses.KEY_RIGHT => ui.moveSelection(1, 0),
