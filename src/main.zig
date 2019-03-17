@@ -70,13 +70,19 @@ pub fn main() anyerror!void {
                 const help_fit_on_terminal = try help.show(stdscr, key_bindings, allocator);
                 // terminal may have been resized while looking at help
                 if (!try ui.onResize()) {
+                    endwin_called = true;
                     return;
                 }
                 if (!help_fit_on_terminal) {
                     ui.setStatusMessage("Please make your terminal bigger to read the help message.");
                 }
             },
-            curses.KEY_RESIZE => if (!try ui.onResize()) return,
+            curses.KEY_RESIZE => {
+                if (!try ui.onResize()) {
+                    endwin_called = true;
+                    return;
+                }
+            },
             curses.KEY_LEFT => ui.moveSelection(-1, 0),
             curses.KEY_RIGHT => ui.moveSelection(1, 0),
             curses.KEY_UP => ui.moveSelection(0, -1),
