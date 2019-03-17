@@ -8,6 +8,7 @@ pub const Args = struct {
     height: u8,
     nmines: u16,
     characters: cursesui.Characters,
+    color: bool,
 
     pub fn initDefaults() Args {
         return Args{
@@ -15,6 +16,7 @@ pub const Args = struct {
             .height = 10,
             .nmines = 10,
             .characters = cursesui.unicode_characters,
+            .color = true,
         };
     }
 };
@@ -37,6 +39,7 @@ fn helpText(param: clap.Param(u8)) []const u8 {
         's' => "size of the minesweeper, e.g. 15x10",
         'n' => "number of mines to add to the game",
         'a' => "use only ASCII characters",
+        'c' => "don't use colors",
         else => unreachable,
     };
 }
@@ -56,6 +59,7 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
         clap.Param(u8).option('s', clap.Names.both("size")),
         clap.Param(u8).option('n', clap.Names{ .short = 'n', .long = "mine-count" }),
         clap.Param(u8).flag('a', clap.Names.both("ascii-only")),
+        clap.Param(u8).flag('c', clap.Names.long("no-colors")),
     };
 
     var iter = clap.args.OsIterator.init(allocator);
@@ -65,6 +69,13 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
     var parser = clap.StreamingClap(u8, clap.args.OsIterator).init(params, &iter);
     while (try parser.next()) |arg| {
         switch (arg.param.id) {
+            'h' => {
+                const stdout = try std.io.getStdOut();
+                const stream = &stdout.outStream().stream;
+                try stream.print("Usage: {} [options]\n\nOptions:\n", exe);
+                try clap.helpEx(stream, u8, params, helpText, valueText);
+                return true;
+            },
             's' => parseSize(arg.value.?, &args.width, &args.height) catch |err| {
                 std.debug.warn("{}: invalid minesweeper size \"{}\": ", exe, arg.value.?);
                 switch (err) {
@@ -82,13 +93,7 @@ pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
                 return Error;
             },
             'a' => args.characters = cursesui.ascii_characters,
-            'h' => {
-                const stdout = try std.io.getStdOut();
-                const stream = &stdout.outStream().stream;
-                try stream.print("Usage: {} [options]\n\nOptions:\n", exe);
-                try clap.helpEx(stream, u8, params, helpText, valueText);
-                return true;
-            },
+            'c' => args.color = false,
             else => unreachable,
         }
     }

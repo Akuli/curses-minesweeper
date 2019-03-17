@@ -62,7 +62,7 @@ pub const Ui = struct {
     number_attrs: [9]c_int,  // for coloring the numbers that show how many mines are around
     status_message: ?[]const u8,
 
-    pub fn init(game: *core.Game, window: curses.Window, characters: Characters) !Ui {
+    pub fn init(game: *core.Game, window: curses.Window, characters: Characters, want_color: bool) !Ui {
         var self = Ui{
             .selected_x = 0,
             .selected_y = 0,
@@ -73,16 +73,19 @@ pub const Ui = struct {
             .number_attrs = undefined,
             .status_message = null,
         };
-        try self.setupColors();
+        try self.setupColors(want_color and curses.has_colors());
         return self;
     }
 
-    fn setupColors(self: *Ui) !void {
-        if (!curses.has_colors()) {
+    fn setupColors(self: *Ui, use_colors: bool) !void {
+        if (!use_colors) {
+            for (self.number_attrs) |*ptr| {
+                ptr.* = 0;
+            }
             return;
         }
-        try curses.start_color();
 
+        try curses.start_color();
         const colors = []c_short{
             curses.COLOR_BLUE,
             curses.COLOR_GREEN,
@@ -96,7 +99,8 @@ pub const Ui = struct {
         };
         std.debug.assert(colors.len == self.number_attrs.len);
         for (colors) |color, i| {
-            self.number_attrs[i] = (try curses.ColorPair.init(@intCast(c_short, i+1), color, curses.COLOR_BLACK)).attr();
+            const pair = try curses.ColorPair.init(@intCast(c_short, i+1), color, curses.COLOR_BLACK);
+            self.number_attrs[i] = pair.attr();
         }
     }
 
