@@ -31,8 +31,11 @@ pub fn main() anyerror!void {
     defer game.deinit();
 
     const stdscr = try curses.initscr(allocator);
+    var endwin_called: bool = false;
     defer {
-        _ = curses.endwin();    // failures are ignored because not much can be done to them
+        if (!endwin_called) {
+            _ = curses.endwin();    // failures are ignored because not much can be done to them
+        }
     }
 
     _ = try curses.curs_set(0);
@@ -41,6 +44,7 @@ pub fn main() anyerror!void {
     var ui = try cursesui.Ui.init(&game, stdscr, args.characters, args.color);
 
     if (!try ui.onResize()) {
+        endwin_called = true;
         return;
     }
 
