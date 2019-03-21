@@ -48,6 +48,7 @@ pub fn main() anyerror!void {
         return;
     }
 
+    // FIXME: the help doesn't fit in 80x24 terminal
     const key_bindings = []const help.KeyBinding{
         help.KeyBinding{ .key = "q", .help = "quit the game" },
         help.KeyBinding{ .key = "h", .help = "show this help" },
@@ -56,6 +57,7 @@ pub fn main() anyerror!void {
         help.KeyBinding{ .key = "enter", .help = "open the selected square" },
         help.KeyBinding{ .key = "f", .help = "flag or unflag the selected square" },
         help.KeyBinding{ .key = "d", .help = "open all non-flagged neighbors if the correct number of them are flagged" },
+        help.KeyBinding{ .key = "e", .help = "like pressing d in all the squares" },
     };
     ui.setStatusMessage("Press h for help.");
 
@@ -90,6 +92,7 @@ pub fn main() anyerror!void {
             '\n' => ui.openSelected(),
             'F', 'f' => ui.toggleFlagSelected(),
             'D', 'd' => ui.openAroundIfSafe(),
+            'E', 'e' => ui.openAroundEverythingSafe(),
             else => {},
         }
     }

@@ -247,4 +247,5 @@ pub const Ui = struct {
     pub fn openSelected(self: *const Ui) void { self.game.open(self.selected_x, self.selected_y); }
     pub fn toggleFlagSelected(self: *const Ui) void { self.game.toggleFlag(self.selected_x, self.selected_y); }
     pub fn openAroundIfSafe(self: *const Ui) void { self.game.openAroundIfSafe(self.selected_x, self.selected_y); }
+    pub fn openAroundEverythingSafe(self: *const Ui) void { self.game.openAroundEverythingSafe(); }
 };

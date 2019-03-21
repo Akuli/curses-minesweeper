@@ -177,6 +177,7 @@ pub const Game = struct {
         if (self.status != GameStatus.PLAY or self.map[y][x].flagged) {
             return;
         }
+
         self.openRecurser(x, y);
         switch (self.status) {
             GameStatus.PLAY => {},
@@ -238,6 +239,16 @@ pub const Game = struct {
             const nx = neighbor[0];
             const ny = neighbor[1];
             self.open(nx, ny);
+        }
+    }
+
+    pub fn openAroundEverythingSafe(self: *Game) void {
+        var x: u8 = 0;
+        while (x < self.width) : (x += 1) {
+            var y: u8 = 0;
+            while (y < self.height) : (y += 1) {
+                self.openAroundIfSafe(x, y);
+            }
         }
     }
 
