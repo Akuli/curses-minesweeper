@@ -23,7 +23,7 @@ the `curses-minesweeper` directory. Then run this:
     $ tar xf zig-linux-SOMETHING.tar.xz         (use autocompletion)
     $ mv zig-linux-SOMETHING zig                (use autocompletion)
 
-Now you can comple and run the project.
+Now you can compile and run the project.
 
     $ zig/zig build -Drelease-safe
     $ mv zig-cache/cursesminesweeper .
