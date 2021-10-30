@@ -69,7 +69,6 @@ pub fn parse(allocator: *std.mem.Allocator) !Args {
         result.color = false;
     }
 
-    // must be at the end because --size and --mine-count can be in any order
     if (result.nmines >= @intCast(u16, result.width) * @intCast(u16, result.height)) {
         try std.io.getStdErr().writer().print(
             "{s}: there must be less mines than places for mines\n",
