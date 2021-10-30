@@ -22,7 +22,7 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
 
 pub fn parse(allocator: *std.mem.Allocator) !Args {
     const params = comptime [_]clap.Param(clap.Help) {
-        clap.parseParam("-h, --help                 Display this help and exit.") catch unreachable,
+        clap.parseParam("-h, --help                 Display this help and exit") catch unreachable,
         clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
         clap.parseParam("-n, --mine-count <NUM>     How many mines") catch unreachable,
         clap.parseParam("-a, --ascii-only           Use ASCII characters only") catch unreachable,
