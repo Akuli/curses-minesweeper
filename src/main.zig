@@ -13,8 +13,7 @@ pub fn main() anyerror!void {
     // displaying unicode characters in curses needs this and cursesw in build.zig
     _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
-    var args = argparser.Args.initDefaults();
-    try argparser.parse(allocator, &args);
+    var args = try argparser.parse(allocator);
 
     var buf: [8]u8 = undefined;
     try std.os.getrandom(buf[0..]);

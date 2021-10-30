@@ -9,18 +9,7 @@ pub const Args = struct {
     nmines: u16,
     characters: cursesui.Characters,
     color: bool,
-
-    pub fn initDefaults() Args {
-        return Args{
-            .width = 10,
-            .height = 10,
-            .nmines = 10,
-            .characters = cursesui.unicode_characters,
-            .color = true,
-        };
-    }
 };
-
 
 fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     const i = std.mem.indexOfScalar(u8, str, 'x') orelse return error.CantFindTheX;
@@ -31,7 +20,7 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
+pub fn parse(allocator: *std.mem.Allocator) !Args {
     const params = comptime [_]clap.Param(clap.Help) {
         clap.parseParam("-h, --help                 Display this help and exit.") catch unreachable,
         clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
@@ -47,6 +36,14 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
     };
     defer args.deinit();
 
+    var result = Args{
+        .width = 10,
+        .height = 10,
+        .nmines = 10,
+        .characters = cursesui.unicode_characters,
+        .color = true,
+    };
+
     if (args.flag("--help")) {
         try std.io.getStdErr().writer().print(
             "Usage: {s} [options]\n\nOptions:\n",
@@ -55,7 +52,7 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
         std.os.exit(0);
     }
     if (args.option("--size")) |size| {
-        parseSize(size, &resultArgs.width, &resultArgs.height) catch |err| {
+        parseSize(size, &result.width, &result.height) catch |err| {
             try std.io.getStdErr().writer().print(
                 "{s}: invalid minesweeper size \"{s}\"",
                 .{ std.process.args().nextPosix().?, size });
@@ -63,20 +60,22 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
         };
     }
     if (args.option("--mine-count")) |mineCount| {
-        resultArgs.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
+        result.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
     }
     if (args.flag("--ascii-only")) {
-        resultArgs.characters = cursesui.ascii_characters;
+        result.characters = cursesui.ascii_characters;
     }
     if (args.flag("--no-colors")) {
-        resultArgs.color = false;
+        result.color = false;
     }
 
     // must be at the end because --size and --mine-count can be in any order
-    if (resultArgs.nmines >= @intCast(u16, resultArgs.width) * @intCast(u16, resultArgs.height)) {
+    if (result.nmines >= @intCast(u16, result.width) * @intCast(u16, result.height)) {
         try std.io.getStdErr().writer().print(
             "{s}: there must be less mines than places for mines\n",
             .{ std.process.args().nextPosix().? });
         std.os.exit(2);
     }
+
+    return result;
 }
