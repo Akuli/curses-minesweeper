@@ -11,7 +11,7 @@ pub fn main() anyerror!void {
     const allocator = std.heap.c_allocator;
 
     // displaying unicode characters in curses needs this and cursesw in build.zig
-    //_ = c_locale.setlocale(c_locale.LC_ALL, c"");
+    _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
     var args = argparser.Args.initDefaults();
     const should_exit = argparser.parse(allocator, &args) catch |e| switch(e) {
