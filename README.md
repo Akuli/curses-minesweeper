@@ -14,25 +14,21 @@ like this:
     $ git submodule init
     $ git submodule update
 
-Then [download zig](https://ziglang.org/download/). At the time of writing this,
-Zig 0.4 hasn't been released yet, so use it if it's listed on the download page
-or use the newest possible zig if it isn't. Download the correct binary (for
-example, `zig-linux-x86_64-something.tar.xz` for 64-bit linux) and move it to
-the `curses-minesweeper` directory. Then run this:
+Then [download zig 0.8.1](https://ziglang.org/download/) and move it to
+the `curses-minesweeper` directory, and run this:
 
     $ tar xf zig-linux-SOMETHING.tar.xz         (use autocompletion)
     $ mv zig-linux-SOMETHING zig                (use autocompletion)
 
 Now you can compile and run the project.
 
-    $ zig/zig build -Drelease-safe
-    $ mv zig-cache/cursesminesweeper .
+    $ zig/zig build
 
 Run the game:
 
-    $ ./cursesminesweeper
+    $ zig-out/bin/cursesminesweeper
 
-Run `./cursesminesweeper --help` for more options.
+Add `--help` for more options.
 
 
 ## FAQ

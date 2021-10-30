@@ -79,7 +79,7 @@ pub fn start_color() !void {
     _ = try checkError(c.start_color());
 }
 
-const color_pair_attrs = []c_int{
+const color_pair_attrs = comptime[_]c_int{
     -1,                 // 0 doesn't seem to be a valid color pair number, curses returns ERR for it
     c.MY_COLOR_PAIR_1,
     c.MY_COLOR_PAIR_2,
@@ -97,7 +97,7 @@ pub const ColorPair = struct {
     id: c_short,
 
     pub fn init(id: c_short, front: c_short, back: c_short) !ColorPair {
-        std.debug.assert(1 <= id and id < c_short(color_pair_attrs.len));
+        std.debug.assert(1 <= id and id < @intCast(c_short, color_pair_attrs.len));
         _ = try checkError(c.init_pair(id, front, back));
         return ColorPair{ .id = id };
     }

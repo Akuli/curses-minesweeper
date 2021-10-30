@@ -11,19 +11,12 @@ pub fn main() anyerror!void {
     const allocator = std.heap.c_allocator;
 
     // displaying unicode characters in curses needs this and cursesw in build.zig
-    _ = c_locale.setlocale(c_locale.LC_ALL, c"");
+    _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
-    var args = argparser.Args.initDefaults();
-    const should_exit = argparser.parse(allocator, &args) catch |e| switch(e) {
-        argparser.Error => return,      // error message is printed already
-        else => return e,
-    };
-    if (should_exit) {
-        return;
-    }
+    var args = try argparser.parse(allocator);
 
     var buf: [8]u8 = undefined;
-    try std.os.getRandomBytes(buf[0..]);
+    try std.os.getrandom(buf[0..]);
     var default_prng = std.rand.DefaultPrng.init(std.mem.readIntSliceLittle(u64, buf[0..]));
     const rnd = &default_prng.random;
 
@@ -49,7 +42,7 @@ pub fn main() anyerror!void {
     }
 
     // FIXME: the help doesn't fit in 80x24 terminal
-    const key_bindings = []const help.KeyBinding{
+    const key_bindings = comptime[_]help.KeyBinding{
         help.KeyBinding{ .key = "q", .help = "quit the game" },
         help.KeyBinding{ .key = "h", .help = "show this help" },
         help.KeyBinding{ .key = "n", .help = "new game" },
@@ -69,7 +62,7 @@ pub fn main() anyerror!void {
             'Q', 'q' => return,
             'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd),
             'H', 'h' => {
-                const help_fit_on_terminal = try help.show(stdscr, key_bindings, allocator);
+                const help_fit_on_terminal = try help.show(stdscr, key_bindings[0..], allocator);
                 // terminal may have been resized while looking at help
                 if (!try ui.onResize()) {
                     endwin_called = true;

@@ -9,20 +9,7 @@ pub const Args = struct {
     nmines: u16,
     characters: cursesui.Characters,
     color: bool,
-
-    pub fn initDefaults() Args {
-        return Args{
-            .width = 10,
-            .height = 10,
-            .nmines = 10,
-            .characters = cursesui.unicode_characters,
-            .color = true,
-        };
-    }
 };
-
-
-pub const Error = error.ArgparserInvalidArg;
 
 fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     const i = std.mem.indexOfScalar(u8, str, 'x') orelse return error.CantFindTheX;
@@ -33,75 +20,61 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-fn helpText(param: clap.Param(u8)) []const u8 {
-    return switch (param.id) {
-        'h' => "show this help and exit",
-        's' => "size of the minesweeper, e.g. 15x10",
-        'n' => "number of mines to add to the game",
-        'a' => "use only ASCII characters",
-        'c' => "don't use colors",
-        else => unreachable,
-    };
-}
-
-fn valueText(param: clap.Param(u8)) []const u8 {
-    return switch (param.id) {
-        's' => "WIDTHxHEIGHT",
-        'n' => "NUMBER",
-        else => unreachable,
-    };
-}
-
-// returns true when the process should exit immediately (e.g. --help)
-pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
-    const params = []clap.Param(u8) {
-        clap.Param(u8).flag('h', clap.Names.long("help")),
-        clap.Param(u8).option('s', clap.Names.both("size")),
-        clap.Param(u8).option('n', clap.Names{ .short = 'n', .long = "mine-count" }),
-        clap.Param(u8).flag('a', clap.Names.both("ascii-only")),
-        clap.Param(u8).flag('c', clap.Names.long("no-colors")),
+pub fn parse(allocator: *std.mem.Allocator) !Args {
+    const params = comptime [_]clap.Param(clap.Help) {
+        clap.parseParam("-h, --help                 Display this help and exit") catch unreachable,
+        clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
+        clap.parseParam("-n, --mine-count <NUM>     How many mines") catch unreachable,
+        clap.parseParam("-a, --ascii-only           Use ASCII characters only") catch unreachable,
+        clap.parseParam("-c, --no-colors            Do not use colors") catch unreachable,
     };
 
-    var iter = clap.args.OsIterator.init(allocator);
-    defer iter.deinit();
-    const exe = (try iter.next()).?;
+    var diag = clap.Diagnostic{};
+    var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
+        diag.report(std.io.getStdErr().writer(), err) catch {};
+        std.os.exit(2);
+    };
+    defer args.deinit();
 
-    var parser = clap.StreamingClap(u8, clap.args.OsIterator).init(params, &iter);
-    while (try parser.next()) |arg| {
-        switch (arg.param.id) {
-            'h' => {
-                const stdout = try std.io.getStdOut();
-                const stream = &stdout.outStream().stream;
-                try stream.print("Usage: {} [options]\n\nOptions:\n", exe);
-                try clap.helpEx(stream, u8, params, helpText, valueText);
-                return true;
-            },
-            's' => parseSize(arg.value.?, &args.width, &args.height) catch |err| {
-                std.debug.warn("{}: invalid minesweeper size \"{}\": ", exe, arg.value.?);
-                switch (err) {
-                    error.Overflow => std.debug.warn("numbers cannot be bigger than {}\n", @intCast(u8, std.math.maxInt(u8))),
-                    error.InvalidCharacter => std.debug.warn("number contains invalid character\n"),
+    var result = Args{
+        .width = 10,
+        .height = 10,
+        .nmines = 10,
+        .characters = cursesui.unicode_characters,
+        .color = true,
+    };
 
-                    error.CantFindTheX => std.debug.warn("expected two x-separated numbers\n"),
-                    error.MustNotBeZero => std.debug.warn("expected a positive number, not 0\n"),
-                }
-                return Error;
-            },
-            'n' => args.nmines = std.fmt.parseUnsigned(u16, arg.value.?, 10) catch |err| {
-                std.debug.warn("{}: mine count must be an integer between 0 and {}\n",
-                    exe, @intCast(u16, std.math.maxInt(u16)));
-                return Error;
-            },
-            'a' => args.characters = cursesui.ascii_characters,
-            'c' => args.color = false,
-            else => unreachable,
-        }
+    if (args.flag("--help")) {
+        try std.io.getStdErr().writer().print(
+            "Usage: {s} [options]\n\nOptions:\n",
+            .{ std.process.args().nextPosix().? });
+        try clap.help(std.io.getStdErr().writer(), params[0..]);
+        std.os.exit(0);
+    }
+    if (args.option("--size")) |size| {
+        parseSize(size, &result.width, &result.height) catch |err| {
+            try std.io.getStdErr().writer().print(
+                "{s}: invalid minesweeper size \"{s}\"",
+                .{ std.process.args().nextPosix().?, size });
+            std.os.exit(2);
+        };
+    }
+    if (args.option("--mine-count")) |mineCount| {
+        result.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
+    }
+    if (args.flag("--ascii-only")) {
+        result.characters = cursesui.ascii_characters;
+    }
+    if (args.flag("--no-colors")) {
+        result.color = false;
     }
 
-    // must be at the end because --size and --mine-count can be in any order
-    if (args.nmines >= u16(args.width) * u16(args.height)) {
-        std.debug.warn("{}: there must be less mines than places for mines\n", exe);
-        return Error;
+    if (result.nmines >= @intCast(u16, result.width) * @intCast(u16, result.height)) {
+        try std.io.getStdErr().writer().print(
+            "{s}: there must be less mines than places for mines\n",
+            .{ std.process.args().nextPosix().? });
+        std.os.exit(2);
     }
-    return false;
+
+    return result;
 }
