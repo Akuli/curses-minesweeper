@@ -22,8 +22,6 @@ pub const Args = struct {
 };
 
 
-pub const Error = error.ArgparserInvalidArg;
-
 fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     const i = std.mem.indexOfScalar(u8, str, 'x') orelse return error.CantFindTheX;
     width.* = try std.fmt.parseUnsigned(u8, str[0..i], 10);
@@ -76,9 +74,9 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
 
     // must be at the end because --size and --mine-count can be in any order
     if (resultArgs.nmines >= @intCast(u16, resultArgs.width) * @intCast(u16, resultArgs.height)) {
-        var stderr = std.io.getStdErr();
-        _ = try stderr.write(std.process.args().nextPosix().?);
-        _ = try stderr.write(": there must be less mines than places for mines\n");
-        return Error;
+        try std.io.getStdErr().writer().print(
+            "{s}: there must be less mines than places for mines\n",
+            .{ std.process.args().nextPosix().? });
+        std.os.exit(2);
     }
 }

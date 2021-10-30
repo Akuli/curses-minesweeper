@@ -14,10 +14,7 @@ pub fn main() anyerror!void {
     _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
     var args = argparser.Args.initDefaults();
-    argparser.parse(allocator, &args) catch |e| switch(e) {
-        argparser.Error => return,      // error message is printed already
-        else => return e,
-    };
+    try argparser.parse(allocator, &args);
 
     var buf: [8]u8 = undefined;
     try std.os.getrandom(buf[0..]);
