@@ -53,54 +53,48 @@ fn valueText(param: clap.Param(u8)) []const u8 {
 }
 
 // returns true when the process should exit immediately (e.g. --help)
-pub fn parse(allocator: *std.mem.Allocator, args: *Args) !bool {
-    const params = []clap.Param(u8) {
-        clap.Param(u8).flag('h', clap.Names.long("help")),
-        clap.Param(u8).option('s', clap.Names.both("size")),
-        clap.Param(u8).option('n', clap.Names{ .short = 'n', .long = "mine-count" }),
-        clap.Param(u8).flag('a', clap.Names.both("ascii-only")),
-        clap.Param(u8).flag('c', clap.Names.long("no-colors")),
+pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !bool {
+    const params = comptime [_]clap.Param(clap.Help) {
+        clap.parseParam("-h, --help                 Display this help and exit.") catch unreachable,
+        clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
+        clap.parseParam("-n, --mine-count <NUM>     How many mines") catch unreachable,
+        clap.parseParam("-a, --ascii-only           Use ASCII characters only") catch unreachable,
+        clap.parseParam("-c, --no-colors            Do not use colors") catch unreachable,
     };
 
-    var iter = clap.args.OsIterator.init(allocator);
-    defer iter.deinit();
-    const exe = (try iter.next()).?;
+    var diag = clap.Diagnostic{};
+    var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
+        diag.report(std.io.getStdErr().writer(), err) catch {};
+        return true;
+    };
+    defer args.deinit();
 
-    var parser = clap.StreamingClap(u8, clap.args.OsIterator).init(params, &iter);
-    while (try parser.next()) |arg| {
-        switch (arg.param.id) {
-            'h' => {
-                const stdout = try std.io.getStdOut();
-                const stream = &stdout.outStream().stream;
-                try stream.print("Usage: {} [options]\n\nOptions:\n", exe);
-                try clap.helpEx(stream, u8, params, helpText, valueText);
-                return true;
-            },
-            's' => parseSize(arg.value.?, &args.width, &args.height) catch |err| {
-                std.debug.warn("{}: invalid minesweeper size \"{}\": ", exe, arg.value.?);
-                switch (err) {
-                    error.Overflow => std.debug.warn("numbers cannot be bigger than {}\n", @intCast(u8, std.math.maxInt(u8))),
-                    error.InvalidCharacter => std.debug.warn("number contains invalid character\n"),
+    if (args.option("--size")) |size| {
+        parseSize(size, &resultArgs.width, &resultArgs.height) catch |err| {
+            var stderr = std.io.getStdErr();
+            _ = try stderr.write(std.process.args().nextPosix().?);
+            _ = try stderr.write(": invalid minesweeper size \"");
+            _ = try stderr.write(size);
+            _ = try stderr.write("\"\n");
+            return Error;
+        };
+    }
 
-                    error.CantFindTheX => std.debug.warn("expected two x-separated numbers\n"),
-                    error.MustNotBeZero => std.debug.warn("expected a positive number, not 0\n"),
-                }
-                return Error;
-            },
-            'n' => args.nmines = std.fmt.parseUnsigned(u16, arg.value.?, 10) catch |err| {
-                std.debug.warn("{}: mine count must be an integer between 0 and {}\n",
-                    exe, @intCast(u16, std.math.maxInt(u16)));
-                return Error;
-            },
-            'a' => args.characters = cursesui.ascii_characters,
-            'c' => args.color = false,
-            else => unreachable,
-        }
+    if (args.option("--mine-count")) |mineCount| {
+        resultArgs.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
+    }
+    if (args.flag("--ascii-only")) {
+        resultArgs.characters = cursesui.ascii_characters;
+    }
+    if (args.flag("--no-colors")) {
+        resultArgs.color = false;
     }
 
     // must be at the end because --size and --mine-count can be in any order
-    if (args.nmines >= u16(args.width) * u16(args.height)) {
-        std.debug.warn("{}: there must be less mines than places for mines\n", exe);
+    if (resultArgs.nmines >= @intCast(u16, resultArgs.width) * @intCast(u16, resultArgs.height)) {
+        var stderr = std.io.getStdErr();
+        _ = try stderr.write(std.process.args().nextPosix().?);
+        _ = try stderr.write(": there must be less mines than places for mines\n");
         return Error;
     }
     return false;

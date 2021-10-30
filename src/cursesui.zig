@@ -86,7 +86,7 @@ pub const Ui = struct {
         }
 
         try curses.start_color();
-        const colors = []c_short{
+        const colors = comptime[_]c_short{
             curses.COLOR_BLUE,
             curses.COLOR_GREEN,
             curses.COLOR_YELLOW,
@@ -223,7 +223,8 @@ pub const Ui = struct {
     pub fn onResize(self: *const Ui) !bool {
         if (self.window.getmaxy() < self.getHeight() or self.window.getmaxx() < self.getWidth()) {
             try curses.endwin();
-            std.debug.warn("Terminal is too small :( Need {}x{}.\n", self.getWidth(), self.getHeight());
+            var stderr = std.io.getStdErr().writer();
+            try stderr.print("Terminal is too small :( Need {}x{}.\n", .{ self.getWidth(), self.getHeight() });
             return false;
         }
         return true;

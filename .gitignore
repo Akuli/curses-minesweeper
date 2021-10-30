@@ -1,2 +1,4 @@
 valgrind.log
+zig/
 zig-cache/
+zig-out/
