@@ -15,7 +15,7 @@ like this:
     $ git submodule update
 
 Then [download zig 0.8.1](https://ziglang.org/download/) and move it to
-the `curses-minesweeper` directory. Then run this:
+the `curses-minesweeper` directory, and run this:
 
     $ tar xf zig-linux-SOMETHING.tar.xz         (use autocompletion)
     $ mv zig-linux-SOMETHING zig                (use autocompletion)
