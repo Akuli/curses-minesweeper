@@ -33,27 +33,7 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-fn helpText(param: clap.Param(u8)) []const u8 {
-    return switch (param.id) {
-        'h' => "show this help and exit",
-        's' => "size of the minesweeper, e.g. 15x10",
-        'n' => "number of mines to add to the game",
-        'a' => "use only ASCII characters",
-        'c' => "don't use colors",
-        else => unreachable,
-    };
-}
-
-fn valueText(param: clap.Param(u8)) []const u8 {
-    return switch (param.id) {
-        's' => "WIDTHxHEIGHT",
-        'n' => "NUMBER",
-        else => unreachable,
-    };
-}
-
-// returns true when the process should exit immediately (e.g. --help)
-pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !bool {
+pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !void {
     const params = comptime [_]clap.Param(clap.Help) {
         clap.parseParam("-h, --help                 Display this help and exit.") catch unreachable,
         clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
@@ -65,21 +45,25 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !bool {
     var diag = clap.Diagnostic{};
     var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
         diag.report(std.io.getStdErr().writer(), err) catch {};
-        return true;
+        std.os.exit(2);
     };
     defer args.deinit();
 
+    if (args.flag("--help")) {
+        try std.io.getStdErr().writer().print(
+            "Usage: {s} [options]\n\nOptions:\n",
+            .{ std.process.args().nextPosix().? });
+        try clap.help(std.io.getStdErr().writer(), params[0..]);
+        std.os.exit(0);
+    }
     if (args.option("--size")) |size| {
         parseSize(size, &resultArgs.width, &resultArgs.height) catch |err| {
-            var stderr = std.io.getStdErr();
-            _ = try stderr.write(std.process.args().nextPosix().?);
-            _ = try stderr.write(": invalid minesweeper size \"");
-            _ = try stderr.write(size);
-            _ = try stderr.write("\"\n");
-            return Error;
+            try std.io.getStdErr().writer().print(
+                "{s}: invalid minesweeper size \"{s}\"",
+                .{ std.process.args().nextPosix().?, size });
+            std.os.exit(2);
         };
     }
-
     if (args.option("--mine-count")) |mineCount| {
         resultArgs.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
     }
@@ -97,5 +81,4 @@ pub fn parse(allocator: *std.mem.Allocator, resultArgs: *Args) !bool {
         _ = try stderr.write(": there must be less mines than places for mines\n");
         return Error;
     }
-    return false;
 }
