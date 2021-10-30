@@ -34,7 +34,7 @@ pub fn main() anyerror!void {
     var endwin_called: bool = false;
     defer {
         if (!endwin_called) {
-            _ = curses.endwin();    // failures are ignored because not much can be done to them
+            curses.endwin() catch {};    // failures are ignored because not much can be done to them
         }
     }
 
