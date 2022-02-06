@@ -123,7 +123,7 @@ pub const Ui = struct {
         try self.window.mvaddstr(y, x, right);
     }
 
-    fn drawGrid(self: *const Ui, allocator: *std.mem.Allocator) !void {
+    fn drawGrid(self: *const Ui) !void {
         var top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
         var left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
 
@@ -203,8 +203,8 @@ pub const Ui = struct {
         try self.window.attroff(curses.A_STANDOUT);
     }
 
-    pub fn draw(self: *Ui, allocator: *std.mem.Allocator) !void {
-        try self.drawGrid(allocator);
+    pub fn draw(self: *Ui) !void {
+        try self.drawGrid();
 
         if (self.status_message == null) {
             switch(self.game.status) {

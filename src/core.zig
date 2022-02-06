@@ -17,16 +17,16 @@ pub const SquareInfo = struct {
 pub const GameStatus = enum { PLAY, WIN, LOSE };
 
 pub const Game = struct {
-    allocator: *std.mem.Allocator,
+    allocator: std.mem.Allocator,
     map: [][]Square,
     width: u8,
     height: u8,
     nmines: u16,
     status: GameStatus,
     mines_added: bool,
-    rnd: *std.rand.Random,
+    rnd: *const std.rand.Random,
 
-    pub fn init(allocator: *std.mem.Allocator, width: u8, height: u8, nmines: u16, rnd: *std.rand.Random) !Game {
+    pub fn init(allocator: std.mem.Allocator, width: u8, height: u8, nmines: u16, rnd: *const std.rand.Random) !Game {
         // in the beginning, there are width*height squares, but the mines are
         // added when the user has already opened one of them, otherwise the
         // first square that the user opens could be a mine
