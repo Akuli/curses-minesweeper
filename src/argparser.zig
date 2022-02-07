@@ -20,7 +20,7 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-pub fn parse(allocator: *std.mem.Allocator) !Args {
+pub fn parse() !Args {
     const params = comptime [_]clap.Param(clap.Help) {
         clap.parseParam("-h, --help                 Display this help and exit") catch unreachable,
         clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
@@ -52,7 +52,7 @@ pub fn parse(allocator: *std.mem.Allocator) !Args {
         std.os.exit(0);
     }
     if (args.option("--size")) |size| {
-        parseSize(size, &result.width, &result.height) catch |err| {
+        parseSize(size, &result.width, &result.height) catch {
             try std.io.getStdErr().writer().print(
                 "{s}: invalid minesweeper size \"{s}\"",
                 .{ std.process.args().nextPosix().?, size });

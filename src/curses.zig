@@ -23,7 +23,7 @@ pub const KEY_DOWN: c_int = c.KEY_DOWN;
 
 pub const Window = struct {
     win: *c.WINDOW,
-    allocator: *std.mem.Allocator,
+    allocator: std.mem.Allocator,
 
     // TODO: change more things to Window methods
 
@@ -54,7 +54,7 @@ pub const Window = struct {
 pub const A_STANDOUT = c.MY_A_STANDOUT;
 
 
-pub fn initscr(allocator: *std.mem.Allocator) !Window {
+pub fn initscr(allocator: std.mem.Allocator) !Window {
     const res = c.initscr();
     if (@ptrToInt(res) == 0) {
         return Error;
@@ -79,7 +79,7 @@ pub fn start_color() !void {
     _ = try checkError(c.start_color());
 }
 
-const color_pair_attrs = comptime[_]c_int{
+const color_pair_attrs = [_]c_int{
     -1,                 // 0 doesn't seem to be a valid color pair number, curses returns ERR for it
     c.MY_COLOR_PAIR_1,
     c.MY_COLOR_PAIR_2,

@@ -13,12 +13,12 @@ pub fn main() anyerror!void {
     // displaying unicode characters in curses needs this and cursesw in build.zig
     _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
-    var args = try argparser.parse(allocator);
+    var args = try argparser.parse();
 
     var buf: [8]u8 = undefined;
     try std.os.getrandom(buf[0..]);
     var default_prng = std.rand.DefaultPrng.init(std.mem.readIntSliceLittle(u64, buf[0..]));
-    const rnd = &default_prng.random;
+    const rnd = &default_prng.random();
 
     var game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd);
     defer game.deinit();
@@ -56,7 +56,7 @@ pub fn main() anyerror!void {
 
     while (true) {
         try stdscr.erase();
-        try ui.draw(allocator);
+        try ui.draw();
 
         switch (try stdscr.getch()) {
             'Q', 'q' => return,

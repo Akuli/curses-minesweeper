@@ -48,7 +48,7 @@ const text_with_single_newlines =
     ;
 
 // does nothing to \n\n repeated, but replaces single \n with spaces
-fn removeSingleNewlines(s: []const u8, allocator: *std.mem.Allocator) ![]u8 {
+fn removeSingleNewlines(s: []const u8, allocator: std.mem.Allocator) ![]u8 {
     var result = std.ArrayList(u8).init(allocator);
     errdefer result.deinit();
 
@@ -76,7 +76,7 @@ fn incrementY(window: curses.Window, y: *u16) !void {
     }
 }
 
-fn drawText(window: curses.Window, key_bindings: []const KeyBinding, allocator: *std.mem.Allocator) !void {
+fn drawText(window: curses.Window, key_bindings: []const KeyBinding, allocator: std.mem.Allocator) !void {
     try window.erase();
 
     var maxlen: u16 = 0;
@@ -111,7 +111,7 @@ fn drawText(window: curses.Window, key_bindings: []const KeyBinding, allocator: 
 }
 
 // returns true if ok, false if help message didn't fit on the terminal
-pub fn show(window: curses.Window, key_bindings: []const KeyBinding, allocator: *std.mem.Allocator) !bool {
+pub fn show(window: curses.Window, key_bindings: []const KeyBinding, allocator: std.mem.Allocator) !bool {
     while (true) {
         drawText(window, key_bindings, allocator) catch |err| switch(err) {
             error.TerminalIsTooSmall => return false,     // it might be playable even if help doesn't fit
