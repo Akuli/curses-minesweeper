@@ -30,7 +30,7 @@ pub const Game = struct {
         // in the beginning, there are width*height squares, but the mines are
         // added when the user has already opened one of them, otherwise the
         // first square that the user opens could be a mine
-        std.debug.assert(@intCast(u16, width)*@intCast(u16, height) - 1 >= nmines);
+        std.debug.assert(@as(u16, width)*@as(u16, height) - 1 >= nmines);
 
         const map = try allocator.alloc([]Square, height);
         var nalloced: u8 = 0;
@@ -73,22 +73,22 @@ pub const Game = struct {
 
     fn getNeighbors(self: Game, x: u8, y: u8, res: [][2]u8) [][2]u8 {
         const neighbors = [_][2]i16{
-            [2]i16{@intCast(i16, x)-1, @intCast(i16, y)-1},
-            [2]i16{@intCast(i16, x)-1, @intCast(i16, y)  },
-            [2]i16{@intCast(i16, x)-1, @intCast(i16, y)+1},
-            [2]i16{@intCast(i16, x),   @intCast(i16, y)+1},
-            [2]i16{@intCast(i16, x)+1, @intCast(i16, y)+1},
-            [2]i16{@intCast(i16, x)+1, @intCast(i16, y)  },
-            [2]i16{@intCast(i16, x)+1, @intCast(i16, y)-1},
-            [2]i16{@intCast(i16, x),   @intCast(i16, y)-1},
+            [2]i16{@as(i16, x)-1, @as(i16, y)-1},
+            [2]i16{@as(i16, x)-1, @as(i16, y)  },
+            [2]i16{@as(i16, x)-1, @as(i16, y)+1},
+            [2]i16{@as(i16, x),   @as(i16, y)+1},
+            [2]i16{@as(i16, x)+1, @as(i16, y)+1},
+            [2]i16{@as(i16, x)+1, @as(i16, y)  },
+            [2]i16{@as(i16, x)+1, @as(i16, y)-1},
+            [2]i16{@as(i16, x),   @as(i16, y)-1},
         };
         var i: u8 = 0;
 
         for (neighbors) |neighbor| {
             const nx_signed = neighbor[0];
             const ny_signed = neighbor[1];
-            if (0 <= nx_signed and nx_signed < @intCast(i16, self.width) and 0 <= ny_signed and ny_signed < @intCast(i16, self.height)) {
-                res[i] = [2]u8{ @intCast(u8, nx_signed), @intCast(u8, ny_signed) };
+            if (0 <= nx_signed and nx_signed < @as(i16, self.width) and 0 <= ny_signed and ny_signed < @as(i16, self.height)) {
+                res[i] = [2]u8{ @as(u8, nx_signed), @as(u8, ny_signed) };
                 i += 1;
             }
         }

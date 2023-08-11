@@ -40,8 +40,8 @@ pub const Window = struct {
     }
 
     // TODO: don't use "legacy" functions like getmaxy()?
-    pub fn getmaxy(self: Window) u16 { return @intCast(u16, c.getmaxy(self.win)); }
-    pub fn getmaxx(self: Window) u16 { return @intCast(u16, c.getmaxx(self.win)); }
+    pub fn getmaxy(self: Window) u16 { return @as(u16, c.getmaxy(self.win)); }
+    pub fn getmaxx(self: Window) u16 { return @as(u16, c.getmaxx(self.win)); }
 
     pub fn attron(self: Window, attr: c_int) !void { _ = try checkError(c.wattron(self.win, attr)); }
     pub fn attroff(self: Window, attr: c_int) !void { _ = try checkError(c.wattroff(self.win, attr)); }
@@ -56,7 +56,7 @@ pub const A_STANDOUT = c.MY_A_STANDOUT;
 
 pub fn initscr(allocator: std.mem.Allocator) !Window {
     const res = c.initscr();
-    if (@ptrToInt(res) == 0) {
+    if (res == null) {
         return Error;
     }
     return Window{ .win = res, .allocator = allocator };
@@ -97,13 +97,13 @@ pub const ColorPair = struct {
     id: c_short,
 
     pub fn init(id: c_short, front: c_short, back: c_short) !ColorPair {
-        std.debug.assert(1 <= id and id < @intCast(c_short, color_pair_attrs.len));
+        std.debug.assert(1 <= id and id < @as(c_short, color_pair_attrs.len));
         _ = try checkError(c.init_pair(id, front, back));
         return ColorPair{ .id = id };
     }
 
     pub fn attr(self: ColorPair) c_int {
-        return color_pair_attrs[@intCast(usize, self.id)];
+        return color_pair_attrs[@as(usize, self.id)];
     }
 };
 

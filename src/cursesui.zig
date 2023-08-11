@@ -98,13 +98,13 @@ pub const Ui = struct {
             curses.COLOR_MAGENTA,
         };
         std.debug.assert(colors.len == self.number_attrs.len);
-        for (colors) |color, i| {
-            const pair = try curses.ColorPair.init(@intCast(c_short, i+1), color, curses.COLOR_BLACK);
+        for (colors, 0..) |color, i| {
+            const pair = try curses.ColorPair.init(@as(c_short, i+1), color, curses.COLOR_BLACK);
             self.number_attrs[i] = pair.attr();
         }
     }
 
-    fn getWidth(self: *const Ui) u16 { return (self.game.width * @intCast(u16, "|---".len)) + @intCast(u16, "|".len); }
+    fn getWidth(self: *const Ui) u16 { return (self.game.width * @as(u16, "|---".len)) + @as(u16, "|".len); }
     fn getHeight(self: *const Ui) u16 { return (self.game.height * 2) + 1; }
 
     fn drawLine(self: *const Ui, y: u16, xleft: u16, left: []const u8, mid: []const u8, right: []const u8, horiz: []const u8) !void {
