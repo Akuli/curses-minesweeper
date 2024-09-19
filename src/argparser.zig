@@ -61,7 +61,10 @@ pub fn parse(allocator: std.mem.Allocator) !Args {
                 std.process.exit(2);
             }
             const mineCount = args[i];
-            result.nmines = try std.fmt.parseUnsigned(u16, mineCount, 10);
+            result.nmines = std.fmt.parseUnsigned(u16, mineCount, 10) catch {
+                std.debug.print("Error: Invalid number of mines\n", .{});
+                std.process.exit(2);
+            };
         } else if (std.mem.eql(u8, arg, "-a") or std.mem.eql(u8, arg, "--ascii-only")) {
             result.characters = cursesui.ascii_characters;
         } else if (std.mem.eql(u8, arg, "-c") or std.mem.eql(u8, arg, "--no-colors")) {
