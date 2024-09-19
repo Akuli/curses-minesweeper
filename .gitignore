@@ -1,4 +1,7 @@
 valgrind.log
-zig/
-zig-cache/
+.zig-cache/
 zig-out/
+
+# downloaded zig before and after extracting, see README
+zig-*-*-*.tar.xz
+zig/

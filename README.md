@@ -14,7 +14,7 @@ like this:
     $ git submodule init
     $ git submodule update
 
-Then [download zig 0.9.0](https://ziglang.org/download/) and move it to
+Then [download zig 0.13.0](https://ziglang.org/download/) and move it to
 the `curses-minesweeper` directory, and run this:
 
     $ tar xf zig-linux-SOMETHING.tar.xz         (use autocompletion)
@@ -26,7 +26,7 @@ Now you can compile and run the project.
 
 Run the game:
 
-    $ zig-out/bin/cursesminesweeper
+    $ zig-out/bin/curses-minesweeper
 
 Add `--help` for more options.
 

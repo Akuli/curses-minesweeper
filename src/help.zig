@@ -81,7 +81,9 @@ fn drawText(window: curses.Window, key_bindings: []const KeyBinding, allocator: 
 
     var maxlen: u16 = 0;
     for (key_bindings) |kb| {
-        maxlen = std.math.max(maxlen, @intCast(u16, kb.key.len));
+        if (kb.key.len > maxlen) {
+            maxlen = @intCast(kb.key.len);
+        }
     }
 
     var y: u16 = 0;

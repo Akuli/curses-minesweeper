@@ -20,21 +20,9 @@ fn parseSize(str: []const u8, width: *u8, height: *u8) !void {
     }
 }
 
-pub fn parse() !Args {
-    const params = comptime [_]clap.Param(clap.Help) {
-        clap.parseParam("-h, --help                 Display this help and exit") catch unreachable,
-        clap.parseParam("-s, --size <STR>           How big to make minesweeper, e.g. 15x15") catch unreachable,
-        clap.parseParam("-n, --mine-count <NUM>     How many mines") catch unreachable,
-        clap.parseParam("-a, --ascii-only           Use ASCII characters only") catch unreachable,
-        clap.parseParam("-c, --no-colors            Do not use colors") catch unreachable,
-    };
-
-    var diag = clap.Diagnostic{};
-    var args = clap.parse(clap.Help, &params, .{ .diagnostic = &diag }) catch |err| {
-        diag.report(std.io.getStdErr().writer(), err) catch {};
-        std.os.exit(2);
-    };
-    defer args.deinit();
+pub fn parse(allocator: std.mem.Allocator) !Args {
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
 
     var result = Args{
         .width = 10,
@@ -44,36 +32,52 @@ pub fn parse() !Args {
         .color = true,
     };
 
-    if (args.flag("--help")) {
-        try std.io.getStdErr().writer().print(
-            "Usage: {s} [options]\n\nOptions:\n",
-            .{ std.process.args().nextPosix().? });
-        try clap.help(std.io.getStdErr().writer(), params[0..]);
-        std.os.exit(0);
-    }
-    if (args.option("--size")) |size| {
-        parseSize(size, &result.width, &result.height) catch {
-            try std.io.getStdErr().writer().print(
-                "{s}: invalid minesweeper size \"{s}\"",
-                .{ std.process.args().nextPosix().?, size });
-            std.os.exit(2);
-        };
-    }
-    if (args.option("--mine-count")) |mineCount| {
-        result.nmines = try std.fmt.parseUnsigned(u8, mineCount, 10);
-    }
-    if (args.flag("--ascii-only")) {
-        result.characters = cursesui.ascii_characters;
-    }
-    if (args.flag("--no-colors")) {
-        result.color = false;
+    var i: usize = 1;
+    while (i < args.len) : (i += 1) {
+        const arg = args[i];
+        if (std.mem.eql(u8, arg, "-h") or std.mem.eql(u8, arg, "--help")) {
+            std.debug.print("Usage: {s} [options]\n\nOptions:\n", .{args[0]});
+            std.debug.print("  -h, --help               Display this help and exit\n", .{});
+            std.debug.print("  -s, --size <SIZE>        How big to make minesweeper, e.g. 15x15\n", .{});
+            std.debug.print("  -n, --mine-count <NUM>   How many mines\n", .{});
+            std.debug.print("  -a, --ascii-only         Use ASCII characters only\n", .{});
+            std.debug.print("  -c, --no-colors          Do not use colors\n", .{});
+            std.process.exit(0);
+        } else if (std.mem.eql(u8, arg, "-s") or std.mem.eql(u8, arg, "--size")) {
+            i += 1;
+            if (i >= args.len) {
+                std.debug.print("Error: Missing value for size\n", .{});
+                std.process.exit(2);
+            }
+            const size = args[i];
+            parseSize(size, &result.width, &result.height) catch {
+                std.debug.print("Error: Invalid minesweeper size \"{s}\"\n", .{size});
+                std.process.exit(2);
+            };
+        } else if (std.mem.eql(u8, arg, "-n") or std.mem.eql(u8, arg, "--mine-count")) {
+            i += 1;
+            if (i >= args.len) {
+                std.debug.print("Error: Missing value for mine count\n", .{});
+                std.process.exit(2);
+            }
+            const mineCount = args[i];
+            result.nmines = std.fmt.parseUnsigned(u16, mineCount, 10) catch {
+                std.debug.print("Error: Invalid number of mines\n", .{});
+                std.process.exit(2);
+            };
+        } else if (std.mem.eql(u8, arg, "-a") or std.mem.eql(u8, arg, "--ascii-only")) {
+            result.characters = cursesui.ascii_characters;
+        } else if (std.mem.eql(u8, arg, "-c") or std.mem.eql(u8, arg, "--no-colors")) {
+            result.color = false;
+        } else {
+            std.debug.print("Error: Unknown argument \"{s}\"\n", .{arg});
+            std.process.exit(2);
+        }
     }
 
-    if (result.nmines >= @intCast(u16, result.width) * @intCast(u16, result.height)) {
-        try std.io.getStdErr().writer().print(
-            "{s}: there must be less mines than places for mines\n",
-            .{ std.process.args().nextPosix().? });
-        std.os.exit(2);
+    if (result.nmines >= @as(u16, result.width) * @as(u16, result.height)) {
+        std.debug.print("Error: there must be less mines than places for mines\n", .{});
+        std.process.exit(2);
     }
 
     return result;

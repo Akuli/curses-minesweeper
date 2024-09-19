@@ -79,9 +79,7 @@ pub const Ui = struct {
 
     fn setupColors(self: *Ui, use_colors: bool) !void {
         if (!use_colors) {
-            for (self.number_attrs) |*ptr| {
-                ptr.* = 0;
-            }
+            @memset(&self.number_attrs, 0);
             return;
         }
 
@@ -98,13 +96,13 @@ pub const Ui = struct {
             curses.COLOR_MAGENTA,
         };
         std.debug.assert(colors.len == self.number_attrs.len);
-        for (colors) |color, i| {
-            const pair = try curses.ColorPair.init(@intCast(c_short, i+1), color, curses.COLOR_BLACK);
+        for (colors, 0..) |color, i| {
+            const pair = try curses.ColorPair.init(@intCast(i+1), color, curses.COLOR_BLACK);
             self.number_attrs[i] = pair.attr();
         }
     }
 
-    fn getWidth(self: *const Ui) u16 { return (self.game.width * @intCast(u16, "|---".len)) + @intCast(u16, "|".len); }
+    fn getWidth(self: *const Ui) u16 { return (self.game.width * @as(u16, "|---".len)) + @as(u16, "|".len); }
     fn getHeight(self: *const Ui) u16 { return (self.game.height * 2) + 1; }
 
     fn drawLine(self: *const Ui, y: u16, xleft: u16, left: []const u8, mid: []const u8, right: []const u8, horiz: []const u8) !void {
@@ -124,8 +122,8 @@ pub const Ui = struct {
     }
 
     fn drawGrid(self: *const Ui) !void {
-        var top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
-        var left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
+        const top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
+        const left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
 
         var gamey: u8 = 0;
         var y: u16 = top;
