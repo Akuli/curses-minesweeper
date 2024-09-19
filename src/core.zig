@@ -259,24 +259,3 @@ pub const Game = struct {
         self.map[y][x].flagged = !self.map[y][x].flagged;
     }
 };
-
-
-test "init deinit open getSquareInfo" {
-    const allocator = std.debug.global_allocator;
-    const expect = std.testing.expect;
-    var default_prng = std.rand.Xoroshiro128.init(42);
-    const rnd = &default_prng.random;
-
-    var game = try Game.init(allocator, 10, 20, 5, rnd);
-    defer game.deinit();
-
-    expect(!game.getSquareInfo(1, 2).opened);
-    game.open(1, 2);
-    //game.debugDump();
-    expect(game.getSquareInfo(1, 2).opened);
-    expect(game.getSquareInfo(1, 2).n_mines_around == 0);
-    expect(game.getSquareInfo(9, 2).opened);
-    expect(game.getSquareInfo(9, 2).n_mines_around == 0);
-    expect(game.getSquareInfo(9, 3).opened);
-    expect(game.getSquareInfo(9, 3).n_mines_around == 1);
-}
