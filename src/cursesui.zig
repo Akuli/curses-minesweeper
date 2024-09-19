@@ -79,9 +79,7 @@ pub const Ui = struct {
 
     fn setupColors(self: *Ui, use_colors: bool) !void {
         if (!use_colors) {
-            for (self.number_attrs) |*ptr| {
-                ptr.* = 0;
-            }
+            @memset(&self.number_attrs, 0);
             return;
         }
 
@@ -99,7 +97,7 @@ pub const Ui = struct {
         };
         std.debug.assert(colors.len == self.number_attrs.len);
         for (colors, 0..) |color, i| {
-            const pair = try curses.ColorPair.init(@as(c_short, i+1), color, curses.COLOR_BLACK);
+            const pair = try curses.ColorPair.init(@intCast(i+1), color, curses.COLOR_BLACK);
             self.number_attrs[i] = pair.attr();
         }
     }
@@ -124,8 +122,8 @@ pub const Ui = struct {
     }
 
     fn drawGrid(self: *const Ui) !void {
-        var top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
-        var left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
+        const top: u16 = (self.window.getmaxy() - self.getHeight()) / 2;
+        const left: u16 = (self.window.getmaxx() - self.getWidth()) / 2;
 
         var gamey: u8 = 0;
         var y: u16 = top;

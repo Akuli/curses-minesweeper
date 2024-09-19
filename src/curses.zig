@@ -34,14 +34,14 @@ pub const Window = struct {
     pub fn mvaddstr(self: Window, y: u16, x: u16, str: []const u8) !void {
         const cstr: []u8 = try self.allocator.alloc(u8, str.len + 1);
         defer self.allocator.free(cstr);
-        std.mem.copy(u8, cstr, str);
+        std.mem.copyForwards(u8, cstr, str);
         cstr[str.len] = 0;
         _ = try checkError(c.mvwaddstr(self.win, y, x, cstr.ptr));
     }
 
     // TODO: don't use "legacy" functions like getmaxy()?
-    pub fn getmaxy(self: Window) u16 { return @as(u16, c.getmaxy(self.win)); }
-    pub fn getmaxx(self: Window) u16 { return @as(u16, c.getmaxx(self.win)); }
+    pub fn getmaxy(self: Window) u16 { return @intCast(c.getmaxy(self.win)); }
+    pub fn getmaxx(self: Window) u16 { return @intCast(c.getmaxx(self.win)); }
 
     pub fn attron(self: Window, attr: c_int) !void { _ = try checkError(c.wattron(self.win, attr)); }
     pub fn attroff(self: Window, attr: c_int) !void { _ = try checkError(c.wattroff(self.win, attr)); }
@@ -103,7 +103,7 @@ pub const ColorPair = struct {
     }
 
     pub fn attr(self: ColorPair) c_int {
-        return color_pair_attrs[@as(usize, self.id)];
+        return color_pair_attrs[@intCast(self.id)];
     }
 };
 

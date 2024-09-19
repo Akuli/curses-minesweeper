@@ -24,9 +24,9 @@ pub const Game = struct {
     nmines: u16,
     status: GameStatus,
     mines_added: bool,
-    rnd: *const std.rand.Random,
+    rnd: std.Random,
 
-    pub fn init(allocator: std.mem.Allocator, width: u8, height: u8, nmines: u16, rnd: *const std.rand.Random) !Game {
+    pub fn init(allocator: std.mem.Allocator, width: u8, height: u8, nmines: u16, rnd: std.Random) !Game {
         // in the beginning, there are width*height squares, but the mines are
         // added when the user has already opened one of them, otherwise the
         // first square that the user opens could be a mine
@@ -88,7 +88,7 @@ pub const Game = struct {
             const nx_signed = neighbor[0];
             const ny_signed = neighbor[1];
             if (0 <= nx_signed and nx_signed < @as(i16, self.width) and 0 <= ny_signed and ny_signed < @as(i16, self.height)) {
-                res[i] = [2]u8{ @as(u8, nx_signed), @as(u8, ny_signed) };
+                res[i] = [2]u8{ @intCast(nx_signed), @intCast(ny_signed) };
                 i += 1;
             }
         }

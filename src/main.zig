@@ -13,14 +13,13 @@ pub fn main() anyerror!void {
     // displaying unicode characters in curses needs this and cursesw in build.zig
     _ = c_locale.setlocale(c_locale.LC_ALL, "");
 
-    var args = try argparser.parse();
+    const args = try argparser.parse(allocator);
 
-    var buf: [8]u8 = undefined;
-    try std.os.getrandom(buf[0..]);
-    var default_prng = std.rand.DefaultPrng.init(std.mem.readIntSliceLittle(u64, buf[0..]));
-    const rnd = &default_prng.random();
+    // Initialize random generator with the current time as seed.
+    const time = std.time.milliTimestamp();
+    var rnd = std.rand.DefaultPrng.init(@intCast(time));
 
-    var game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd);
+    var game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd.random());
     defer game.deinit();
 
     const stdscr = try curses.initscr(allocator);
@@ -60,7 +59,7 @@ pub fn main() anyerror!void {
 
         switch (try stdscr.getch()) {
             'Q', 'q' => return,
-            'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd),
+            'N', 'n' => game = try core.Game.init(allocator, args.width, args.height, args.nmines, rnd.random()),
             'H', 'h' => {
                 const help_fit_on_terminal = try help.show(stdscr, key_bindings[0..], allocator);
                 // terminal may have been resized while looking at help
