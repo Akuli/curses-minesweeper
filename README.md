@@ -11,8 +11,6 @@ like this:
     $ sudo apt install git wget libncurses5-dev libncursesw5-dev gcc
     $ git clone https://github.com/Akuli/curses-minesweeper
     $ cd curses-minesweeper
-    $ git submodule init
-    $ git submodule update
 
 Then [download zig 0.13.0](https://ziglang.org/download/) and move it to
 the `curses-minesweeper` directory, and run this:
