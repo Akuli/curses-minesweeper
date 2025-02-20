@@ -55,10 +55,7 @@ pub const A_STANDOUT = c.MY_A_STANDOUT;
 
 
 pub fn initscr(allocator: std.mem.Allocator) !Window {
-    const res = c.initscr();
-    if (res == null) {
-        return Error;
-    }
+    const res = c.initscr() orelse return Error;
     return Window{ .win = res, .allocator = allocator };
 }
 
